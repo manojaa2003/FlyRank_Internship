@@ -26,6 +26,15 @@ tasks = [
 class CreateTask(BaseModel):
     title : Optional[str] = None
 
+class UpdateTask(BaseModel):
+    title: Optional[str] = None
+    done: Optional[bool] = None
+
+def get_data(id):
+    for task in tasks:
+        if task["id"] == id:
+            return task
+
 @app.get("/")
 async def root():
     return {
@@ -73,3 +82,29 @@ async def create_task(task: CreateTask):
     }
     tasks.append(new_task)
     return new_task
+
+@app.put("/tasks/{task_id}",status_code=200)
+async def update_task_data(task_id: int, update_task: UpdateTask):
+    old_task = get_data(task_id)
+    if old_task is None:
+        return JSONResponse(
+            status_code=404,
+            content={"error": f"Task {task_id} not found"}
+        )
+    if update_task.title is not None:
+        old_task["title"] = update_task.title
+    if update_task.done is not None:
+        old_task["done"] = update_task.done
+
+    return old_task
+
+@app.delete("/tasks/{task_id}",status_code=204)
+async def delete_task(task_id: int):
+    task = get_data(task_id)
+    if task is None:
+        return JSONResponse(
+            status_code=404,
+            content={"error": f"Task {task_id} not found"}
+        )
+    tasks.remove(task)
+    return {"message": f"Task {task_id} deleted successfully"}
