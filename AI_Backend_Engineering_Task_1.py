@@ -1,7 +1,7 @@
 from typing import Optional
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 app = FastAPI()
 
@@ -24,18 +24,18 @@ tasks = [
 ]
 
 class CreateTask(BaseModel):
-    title : Optional[str] = None
+    title : Optional[str] = Field(default=None,description="Title of the task to be created.")
 
 class UpdateTask(BaseModel):
-    title: Optional[str] = None
-    done: Optional[bool] = None
+    title: Optional[str] = Field(default=None,description="Updated title of the task.")
+    done: Optional[bool] = Field(default=None,description="Marks the task as completed (true) or pending (false).")
 
 def get_data(id):
     for task in tasks:
         if task["id"] == id:
             return task
 
-@app.get("/")
+@app.get("/",summary="API Home",description="Returns basic information about the Task API, including its version and available endpoints.")
 async def root():
     return {
         "name" : "Task API",
@@ -43,17 +43,17 @@ async def root():
         "endpoints" : ["/tasks"]
     }
 
-@app.get("/health")
+@app.get("/health", summary="Health Check",description="Checks whether the Task API service is running and available.")
 async def health():
     return {
         "status" : "ok"
     }
 
-@app.get("/tasks")
+@app.get("/tasks",summary="Get All Tasks",description="Retrieves the complete list of tasks currently stored in memory.")
 async def get_tasks():
     return tasks
 
-@app.get("/tasks/{task_id}")
+@app.get("/tasks/{task_id}",summary="Get Task by ID",description="Retrieves a specific task using its unique task ID. Returns 404 if the task does not exist.")
 async def get_task(task_id: int):
     for task in tasks:
         if task["id"] == task_id:
@@ -63,7 +63,7 @@ async def get_task(task_id: int):
         content={"error": f"Task {task_id} not found"}
     )
 
-@app.post("/tasks", status_code=201)
+@app.post("/tasks", status_code=201,summary="Create Task",description="Creates a new task with the next available ID and sets its completion status to false.")
 async def create_task(task: CreateTask):
     if task.title is None or not task.title.strip():
         return JSONResponse(
@@ -83,7 +83,7 @@ async def create_task(task: CreateTask):
     tasks.append(new_task)
     return new_task
 
-@app.put("/tasks/{task_id}",status_code=200)
+@app.put("/tasks/{task_id}",status_code=200,summary="Update Task",description="Updates the title and/or completion status of an existing task. Returns 404 if the task is not found.")
 async def update_task_data(task_id: int, update_task: UpdateTask):
     old_task = get_data(task_id)
     if old_task is None:
@@ -98,7 +98,7 @@ async def update_task_data(task_id: int, update_task: UpdateTask):
 
     return old_task
 
-@app.delete("/tasks/{task_id}",status_code=204)
+@app.delete("/tasks/{task_id}",status_code=204,summary="Delete Task",description="Deletes an existing task using its ID. Returns 404 if the task does not exist.")
 async def delete_task(task_id: int):
     task = get_data(task_id)
     if task is None:
