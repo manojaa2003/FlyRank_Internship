@@ -152,8 +152,6 @@ Using Swagger UI, you can:
 
 ### Swagger Screenshot
 
-> Replace the image below with your screenshot.
-
 ```text
 README.md
 │
@@ -161,10 +159,8 @@ README.md
       └── swagger-ui.png
 ```
 
-Then include it like this:
-
 ```markdown
-![Swagger UI](images/swagger-ui.png)
+![Swagger UI](images/swagger_ui.png)
 ```
 
 ---
