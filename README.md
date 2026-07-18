@@ -159,9 +159,8 @@ README.md
       └── swagger-ui.png
 ```
 
-```markdown
 ![Swagger UI](Images/swagger_ui.png)
-```
+
 
 ---
 
