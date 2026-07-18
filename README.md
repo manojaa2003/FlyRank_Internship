@@ -155,12 +155,12 @@ Using Swagger UI, you can:
 ```text
 README.md
 │
-└── images
+└── Images
       └── swagger-ui.png
 ```
 
 ```markdown
-![Swagger UI](images/swagger_ui.png)
+![Swagger UI](Images/swagger_ui.png)
 ```
 
 ---
@@ -171,7 +171,7 @@ README.md
 .
 ├── AI_Backend_Engineering_Task_1.py
 ├── README.md
-└── images
+└── Images
     └── swagger-ui.png
 ```
 
